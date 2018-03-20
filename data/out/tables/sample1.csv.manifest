@@ -1,0 +1,1 @@
+{"destination":"out.c-main.Leads","columns":["id",["id","auto_col_1","auto_col_2","auto_col_3"]],"incremental":false,"primary_key":[],"delimiter":",","enclosure":"\"","metadata":[{"id":"228956","key":"KBC.createdBy.component.id","value":"keboola.python-transformation","provider":"system","timestamp":"2017-05-26 00:39:07"}],"column_metadata":{"id":[]}}
