@@ -86,7 +86,7 @@ class Component extends BaseComponent
 
     private function writeManifest(SplFileInfo $file, array $manifest, array $header) : void
     {
-        $manifest["columns"][] = $header;
+        $manifest["columns"] = $header;
         $targetManifest = $this->getDataDir() . '/out/tables/' . $file->getFilename() . ".manifest";
         file_put_contents(
             $targetManifest,
