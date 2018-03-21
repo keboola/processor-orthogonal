@@ -120,19 +120,19 @@ class Component extends BaseComponent
 
             if (is_dir($file->getPathname())) {
                 // sliced file
-                $finder = new Finder();
-                $finder->in($file->getPathname())->files();
+                $sliceFinder = new Finder();
+                $sliceFinder->in($file->getPathname())->files();
                 $slicedDestination = $this->getDataDir() . '/out/tables/' . $file->getFilename();
                 $this->fs->mkdir($slicedDestination);
                 $maxColCount = 0;
-                foreach ($finder as $slicedFile) {
+                foreach ($sliceFinder as $slicedFile) {
                     $maxColCount = max(
                         $maxColCount,
                         $this->getMaxColCount($slicedFile, $delimiter, $enclosure)
                     );
                 }
                 $header = $this->fillHeader($header, $maxColCount);
-                foreach ($finder as $slicedFile) {
+                foreach ($sliceFinder as $slicedFile) {
                     $destination = $this->getDataDir() . '/out/tables/' .
                         $file->getFilename() . '/' . $slicedFile->getFilename();
                     $this->orthogonalize($slicedFile, $destination, $maxColCount, $delimiter, $enclosure);
