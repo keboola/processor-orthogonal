@@ -1,7 +1,7 @@
 {
-    "name": "fill-me-in/fill-me-in",
+    "name": "keboola/processor-orthogonal",
     "license": "MIT",
-    "description": "fill-me-in",
+    "description": "Makes a CSV files orthogonal",
     "type": "project",
     "require": {
         "PHP": "^7.1",
