@@ -31,6 +31,68 @@ class Component extends BaseComponent
      */
     private $fs;
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->fs = new Filesystem();
+        $this->jsonEncode = new JsonEncode();
+        $this->jsonDecode = new JsonDecode(true);
+    }
+
+    public function run(): void
+    {
+        $finder = new Finder();
+        $finder->in($this->getDataDir() . '/in/tables')->notName('*.manifest')->depth(0);
+        foreach ($finder as $file) {
+            $manifest = $this->readManifest($file);
+            $header = $manifest['columns'];
+            $delimiter = $manifest['delimiter'];
+            $enclosure = $manifest['enclosure'];
+
+            if (is_dir($file->getPathname())) {
+                // sliced file
+                $sliceFinder = new Finder();
+                $sliceFinder->in($file->getPathname())->files();
+                $slicedDestination = $this->getDataDir() . '/out/tables/' . $file->getFilename();
+                $this->fs->mkdir($slicedDestination);
+                $maxColCount = 0;
+                foreach ($sliceFinder as $slicedFile) {
+                    $maxColCount = max(
+                        $maxColCount,
+                        $this->getMaxColCount($slicedFile, $delimiter, $enclosure)
+                    );
+                }
+                $header = $this->fillHeader($header, $maxColCount);
+                foreach ($sliceFinder as $slicedFile) {
+                    $destination = $this->getDataDir() . '/out/tables/' .
+                        $file->getFilename() . '/' . $slicedFile->getFilename();
+                    $this->orthogonalize($slicedFile, $destination, $maxColCount, $delimiter, $enclosure);
+                }
+            } else {
+                $maxColCount = $this->getMaxColCount($file, $delimiter, $enclosure);
+                $header = $this->fillHeader($header, $maxColCount);
+                $destination = $this->getDataDir() . '/out/tables/' . $file->getFilename();
+                $this->orthogonalize($file, $destination, $maxColCount, $delimiter, $enclosure);
+            }
+
+            $this->writeManifest($file, $manifest, $header);
+        }
+    }
+
+    private function readManifest(SplFileInfo $file) : array
+    {
+        $manifestFile = $file->getPathname() . '.manifest';
+        if (!$this->fs->exists($manifestFile)) {
+            throw new UserException(
+                'Table ' . $file->getBasename() . ' does not have a manifest file.'
+            );
+        }
+
+        $manifest = $this->jsonDecode->decode(file_get_contents($manifestFile), JsonEncoder::FORMAT);
+        $this->validateManifest($manifest, $file->getFilename());
+        return $manifest;
+    }
+
     private function validateManifest(array $manifest, string $fileName) : void
     {
         if (!isset($manifest['columns'])) {
@@ -92,68 +154,6 @@ class Component extends BaseComponent
             $targetManifest,
             $this->jsonEncode->encode($manifest, JsonEncoder::FORMAT)
         );
-    }
-
-    private function readManifest(SplFileInfo $file) : array
-    {
-        $manifestFile = $file->getPathname() . '.manifest';
-        if (!$this->fs->exists($manifestFile)) {
-            throw new UserException(
-                'Table ' . $file->getBasename() . ' does not have a manifest file.'
-            );
-        }
-
-        $manifest = $this->jsonDecode->decode(file_get_contents($manifestFile), JsonEncoder::FORMAT);
-        $this->validateManifest($manifest, $file->getFilename());
-        return $manifest;
-    }
-
-    public function run(): void
-    {
-        $finder = new Finder();
-        $finder->in($this->getDataDir() . '/in/tables')->notName('*.manifest')->depth(0);
-        foreach ($finder as $file) {
-            $manifest = $this->readManifest($file);
-            $header = $manifest['columns'];
-            $delimiter = $manifest['delimiter'];
-            $enclosure = $manifest['enclosure'];
-
-            if (is_dir($file->getPathname())) {
-                // sliced file
-                $sliceFinder = new Finder();
-                $sliceFinder->in($file->getPathname())->files();
-                $slicedDestination = $this->getDataDir() . '/out/tables/' . $file->getFilename();
-                $this->fs->mkdir($slicedDestination);
-                $maxColCount = 0;
-                foreach ($sliceFinder as $slicedFile) {
-                    $maxColCount = max(
-                        $maxColCount,
-                        $this->getMaxColCount($slicedFile, $delimiter, $enclosure)
-                    );
-                }
-                $header = $this->fillHeader($header, $maxColCount);
-                foreach ($sliceFinder as $slicedFile) {
-                    $destination = $this->getDataDir() . '/out/tables/' .
-                        $file->getFilename() . '/' . $slicedFile->getFilename();
-                    $this->orthogonalize($slicedFile, $destination, $maxColCount, $delimiter, $enclosure);
-                }
-            } else {
-                $maxColCount = $this->getMaxColCount($file, $delimiter, $enclosure);
-                $header = $this->fillHeader($header, $maxColCount);
-                $destination = $this->getDataDir() . '/out/tables/' . $file->getFilename();
-                $this->orthogonalize($file, $destination, $maxColCount, $delimiter, $enclosure);
-            }
-
-            $this->writeManifest($file, $manifest, $header);
-        }
-    }
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->fs = new Filesystem();
-        $this->jsonEncode = new JsonEncode();
-        $this->jsonDecode = new JsonDecode(true);
     }
 
     protected function getConfigClass(): string
