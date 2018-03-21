@@ -19,12 +19,12 @@
     },
     "autoload": {
         "psr-4": {
-            "MyComponent\\": "src/"
+            "Keboola\\ProcessorOrthogonal\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "MyComponent\\Tests\\": "tests/phpunit/"
+            "Keboola\\ProcessorOrthogonal\\Tests\\": "tests/phpunit/"
         }
     },
     "scripts": {

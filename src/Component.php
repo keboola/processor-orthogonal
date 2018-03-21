@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyComponent;
+namespace Keboola\ProcessorOrthogonal;
 
 use Keboola\Component\BaseComponent;
 use Keboola\Component\UserException;
