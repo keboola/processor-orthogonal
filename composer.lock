@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "4dc8111f2ce26d7a4e91c84cc63b3c9d",
+    "content-hash": "b368ede4f4063fda3e91486d9d0638a1",
     "packages": [
         {
             "name": "keboola/csv",
