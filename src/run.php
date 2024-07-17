@@ -2,14 +2,16 @@
 
 declare(strict_types=1);
 
+use Keboola\Component\Logger;
 use Keboola\Component\UserException;
 use Keboola\ProcessorOrthogonal\Component;
 
 require __DIR__ . '/../vendor/autoload.php';
 
+$logger = new Logger();
 try {
-    $app = new Component();
-    $app->run();
+    $app = new Component($logger);
+    $app->execute();
     exit(0);
 } catch (UserException $e) {
     echo $e->getMessage();
