@@ -1,0 +1,17 @@
+{
+    "destination": "out.c-main.Leads",
+    "incremental": false,
+    "delimiter": ",",
+    "enclosure": "\"",
+    "manifest_type": "output",
+    "table_metadata": {
+        "KBC.createdBy.component.id": "keboola.python-transformation"
+    },
+    "schema": [
+        {
+            "nullable": true,
+            "primary_key": false,
+            "name": "id"
+        }
+    ]
+}

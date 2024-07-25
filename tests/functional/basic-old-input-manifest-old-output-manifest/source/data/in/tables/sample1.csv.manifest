@@ -1,0 +1,44 @@
+{
+    "destination": "out.c-main.Leads",
+    "incremental": false,
+    "delimiter": ",",
+    "enclosure": "\"",
+    "metadata": [
+        {
+            "key": "KBC.createdBy.component.id",
+            "value": "keboola.python-transformation"
+        }
+    ],
+    "columns": [
+        "id",
+        "auto_col_1",
+        "auto_col_2",
+        "auto_col_3"
+    ],
+    "column_metadata": {
+        "id": [
+            {
+                "key": "KBC.datatype.nullable",
+                "value": true
+            }
+        ],
+        "auto_col_1": [
+            {
+                "key": "KBC.datatype.nullable",
+                "value": true
+            }
+        ],
+        "auto_col_2": [
+            {
+                "key": "KBC.datatype.nullable",
+                "value": true
+            }
+        ],
+        "auto_col_3": [
+            {
+                "key": "KBC.datatype.nullable",
+                "value": true
+            }
+        ]
+    }
+}
