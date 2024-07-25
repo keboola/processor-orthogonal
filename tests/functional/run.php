@@ -32,7 +32,23 @@ foreach ($finder as $testSuite) {
 
     $runCommand = "KBC_DATADIR={$temp->getTmpFolder()} php /code/src/run.php";
     $runProcess = Process::fromShellCommandline($runCommand);
-    $runProcess->mustRun();
+    $runProcess->mustRun(
+        function ($type, $buffer): void {
+            print $buffer; // print output of the command
+        },
+    );
+
+    // prettify manifest files
+    foreach ((new Finder)->files()->in($temp->getTmpFolder() . '/out/tables')->name(['~.*\.manifest~']) as $file) {
+        $path = (string) $file->getRealPath();
+        $json = (string) file_get_contents($path);
+        try {
+            file_put_contents($path, (string) json_encode(json_decode($json), JSON_PRETTY_PRINT));
+        } catch (Throwable $e) {
+            // If a problem occurs, preserve the original contents
+            file_put_contents($path, $json);
+        }
+    }
 
     $diffCommand = sprintf(
         'diff --exclude=.gitkeep --ignore-all-space --recursive %s/expected/data/out %s/out',
