@@ -1,2 +1,6 @@
 parameters:
     ignoreErrors:
+        # Newer symfony/config (pulled by php-component ^11) makes ArrayNodeDefinition a generic,
+        # so phpstan max wants its type parameter on getParametersDefinition()'s return type.
+        # The parameter is symfony-internal and not meaningful to annotate here.
+        - '#return type with generic class Symfony\\Component\\Config\\Definition\\Builder\\ArrayNodeDefinition does not specify its types#'
